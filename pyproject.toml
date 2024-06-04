@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "tiny-ai-client"
+version = "0.0.3"
+description = "Tiny AI client for LLMs. As simple as it gets."
+authors = ["piEsposito <piero.skywalker@gmail.com>"]
+license = "Apache 2.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10"
+pydantic = "2.7.3"
+openai = "1.31.0"
+anthropic = "0.28.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
