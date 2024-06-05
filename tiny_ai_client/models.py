@@ -75,6 +75,11 @@ class AI:
 
             return AnthropicClientWrapper(model_name, tools)
 
+        if "gemini" in model_name:
+            from tiny_ai_client.gemini_ import GeminiClientWrapper
+
+            return GeminiClientWrapper(model_name, tools)
+
         raise NotImplementedError(f"{model_name=} not supported")
 
     @property

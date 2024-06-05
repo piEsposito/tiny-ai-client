@@ -14,10 +14,11 @@ Features:
 - Structured output
 - Vision
 - PyPI package `tiny-ai-client`
+- Gemini (vision, no tools)
 
 
 Roadmap:
-- Gemini
+- Gemini tools
 
 ## Simple
 `tiny-ai-client` is simple and intuitive:

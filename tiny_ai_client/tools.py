@@ -24,7 +24,7 @@ def function_to_json(func, parameters_key="parameters") -> dict:
             parameters_key: {
                 "type": "object",
                 "properties": model_schema["properties"],
-                "required": model_schema.get("required", []),
+                "required": model_schema.get("required", True),
             },
         },
     }
