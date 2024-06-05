@@ -20,7 +20,8 @@ class AI:
         self.temperature: int = temperature
         self.max_new_tokens: int | None = max_new_tokens
         self.timeout: int = timeout
-        self.tools = tools or []
+        tools = tools or []
+        self.tools = tools
         self.tools_dict = {tool.__name__: tool for tool in tools}
 
         self.model_name: str = model_name
