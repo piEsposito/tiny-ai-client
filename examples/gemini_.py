@@ -33,7 +33,7 @@ def main():
         model_name="gemini-1.5-flash",
         system="You are Spock, from Star Trek.",
         max_new_tokens=128,
-        tools=[get_current_weather],
+        tools=[],
     )
     response = ai("How are you?")
     print(f"{response=}")
@@ -48,7 +48,7 @@ async def async_ai_main():
         model_name="gemini-1.5-flash",
         system="You are Spock, from Star Trek.",
         max_new_tokens=128,
-        tools=[get_current_weather],
+        tools=[],
     )
     response = await ai("How are you?")
     print(f"{response=}")
