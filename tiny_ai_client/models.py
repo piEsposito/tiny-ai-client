@@ -15,20 +15,22 @@ class AI:
         max_new_tokens: int | None = None,
         timeout: int = 30,
         tools: List[Union[Callable, Dict]] | None = None,
+        chat: List["Message"] | None = None,
     ):
         # llm sampling parameters
         self.temperature: int = temperature
         self.max_new_tokens: int | None = max_new_tokens
         self.timeout: int = timeout
+        self.chat: List[Message] = chat or []
+        if system:
+            self.chat.append(Message(text=system, role="system"))
+
         tools = tools or []
         self.tools = tools
         self.tools_dict = {tool.__name__: tool for tool in tools}
 
         self.model_name: str = model_name
         self.system: str = system
-        self.chat: List[Message] = (
-            [Message(role="system", text=system)] if system else []
-        )
         self.client_wrapper: LLMClientWrapper = self.get_llm_client_wrapper(
             model_name=model_name, tools=self.tools
         )
