@@ -1,0 +1,24 @@
+general:
+  name: TinyAiClient
+  version: 1.0
+
+#
+# LLM Providers
+#
+anthropic:
+  api_key: nop
+
+gemini:
+  api_key: nop
+
+openai:
+  api_key: nop
+
+#
+# Database Config
+#
+database:
+  host: localhost
+  port: 3306
+  user: root
+  password: x
