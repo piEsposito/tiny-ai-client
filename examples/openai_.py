@@ -66,6 +66,8 @@ def main():
 
 
 if __name__ == "__main__":
-    os.environ["OPENAI_API_KEY"] = None
+    from util.yaml_config import Config
+    config = Config("assets/config.yaml")
+    os.environ["OPENAI_API_KEY"] = config.get_value('openai', 'api_key')
     main()
     asyncio.run(async_ai_main())
