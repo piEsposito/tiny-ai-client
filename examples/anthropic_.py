@@ -62,6 +62,6 @@ def main():
 
 
 if __name__ == "__main__":
-    os.environ["ANTHROPIC_API_KEY"] = None
+    os.environ["ANTHROPIC_API_KEY"] = ""
     main()
     asyncio.run(async_ai_main())
