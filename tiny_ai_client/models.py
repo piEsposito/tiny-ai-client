@@ -87,7 +87,7 @@ class AI:
 
     @property
     def model_name(self) -> str:
-        return self._model_name
+        return self.model_name
 
     @model_name.setter
     def model_name(self, value: str) -> None:
