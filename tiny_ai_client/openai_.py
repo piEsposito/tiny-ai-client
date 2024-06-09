@@ -68,7 +68,7 @@ class OpenAIClientWrapper(LLMClientWrapper):
         temperature: int | None,
         max_new_tokens: int | None,
         timeout: int,
-    ) -> str:
+    ) -> Message:
         kwargs = {}
         if temperature is not None:
             kwargs["temperature"] = temperature
@@ -103,7 +103,7 @@ class OpenAIClientWrapper(LLMClientWrapper):
         temperature: int | None,
         max_new_tokens: int | None,
         timeout: int,
-    ) -> str:
+    ) -> Message:
         kwargs = {}
         if temperature is not None:
             kwargs["temperature"] = temperature

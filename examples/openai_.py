@@ -66,6 +66,6 @@ def main():
 
 
 if __name__ == "__main__":
-    os.environ["OPENAI_API_KEY"] = None
+    os.environ["OPENAI_API_KEY"] = ""
     main()
     asyncio.run(async_ai_main())

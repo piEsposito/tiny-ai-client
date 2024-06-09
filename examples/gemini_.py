@@ -58,6 +58,6 @@ async def async_ai_main():
 
 
 if __name__ == "__main__":
-    os.environ["GOOGLE_API_KEY"] = None
+    os.environ["GOOGLE_API_KEY"] = ""
     main()
     asyncio.run(async_ai_main())
