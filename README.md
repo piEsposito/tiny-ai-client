@@ -17,6 +17,7 @@ Features:
 - PyPI package `tiny-ai-client`
 - Gemini (vision, no tools)
 - Ollama (text, no vision, no tools) (you can also pass a custom model_server_url to AI/AsyncAI)
+- Groq (text, tools, no vision)
 
 Roadmap:
 

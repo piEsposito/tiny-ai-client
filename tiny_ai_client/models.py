@@ -80,6 +80,12 @@ class AI:
             if self.model_server_url:
                 kwargs["url"] = self.model_server_url
             return OllamaClientWrapper(model_name, tools, **kwargs)
+
+        if model_name.startswith("groq:"):
+            from tiny_ai_client.groq_ import GroqClientWrapper
+
+            return GroqClientWrapper(model_name, tools)
+
         if "gpt" in model_name:
             from tiny_ai_client.openai_ import OpenAIClientWrapper
 
