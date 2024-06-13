@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tiny-ai-client"
-version = "0.0.7"
+version = "0.0.8"
 description = "Tiny AI client for LLMs. As simple as it gets."
 authors = ["piEsposito <piero.skywalker@gmail.com>"]
 license = "Apache 2.0"

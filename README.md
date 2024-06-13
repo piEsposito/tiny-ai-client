@@ -7,6 +7,7 @@ I want to change LLMs with ease, while knowing what is happening under the hood.
 Simple and tiny, that's the goal.
 
 Features:
+
 - OpenAI
 - Anthropic
 - Async
@@ -15,13 +16,16 @@ Features:
 - Vision
 - PyPI package `tiny-ai-client`
 - Gemini (vision, no tools)
-
+- Ollama (text, no vision, no tools) (you can also pass a custom model_server_url to AI/AsyncAI)
 
 Roadmap:
+
 - Gemini tools
 
 ## Simple
+
 `tiny-ai-client` is simple and intuitive:
+
 - Do you want set your model? Just pass the model name.
 - Do you want to change your model? Just change the model name.
 - Want to send a message? `msg: str = ai("hello")` and say goodbye to parsing a complex json.
@@ -31,6 +35,7 @@ Roadmap:
 - Video? Just pass a list of `PIL.Image.Image`.
 
 ## Tiny
+
 - `tiny-ai-client` is very small, its core logic is < 250 lines of code (including comments and docstrings) and ideally won't pass 500. It is and always will be easy to understand, tweak and use.
   - The core logic is in `tiny_ai_client/models.py`
   - Vision utils are in `tiny_ai_client/vision.py`
@@ -60,6 +65,7 @@ response = await ai("What is the meaning of life?")
 ```
 
 For Anthropic:
+
 ```python
 from tiny_ai_client import AI, AsyncAI
 

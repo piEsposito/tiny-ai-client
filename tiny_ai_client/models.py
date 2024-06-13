@@ -16,7 +16,9 @@ class AI:
         timeout: int = 30,
         tools: List[Union[Callable, Dict]] | None = None,
         chat: List["Message"] | None = None,
+        model_server_url: str | None = None,
     ):
+        self.model_server_url = model_server_url
         # llm sampling parameters
         self.temperature: int = temperature
         self.max_new_tokens: int | None = max_new_tokens
@@ -31,6 +33,7 @@ class AI:
 
         self.model_name: str = model_name
         self.system: str = system
+
         self.client_wrapper: LLMClientWrapper = self.get_llm_client_wrapper(
             model_name=model_name, tools=self.tools
         )
@@ -60,6 +63,7 @@ class AI:
         if response_msg.tool_call:
             func = self.tools_dict[response_msg.tool_call.name]
             tool_input = json_to_function_input(func, response_msg.tool_call.parameters)
+            print(f"{tool_input=}")
             tool_result = func(tool_input)
             response_msg.tool_call.result = tool_result
         return response_msg.text or (
@@ -69,6 +73,13 @@ class AI:
     def get_llm_client_wrapper(
         self, model_name: str, tools: List[Union[Callable, Dict]]
     ) -> "LLMClientWrapper":
+        if model_name.startswith("ollama:"):
+            from tiny_ai_client.ollama_ import OllamaClientWrapper
+
+            kwargs = {}
+            if self.model_server_url:
+                kwargs["url"] = self.model_server_url
+            return OllamaClientWrapper(model_name, tools, **kwargs)
         if "gpt" in model_name:
             from tiny_ai_client.openai_ import OpenAIClientWrapper
 
