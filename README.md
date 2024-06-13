@@ -17,7 +17,9 @@ Features:
 - PyPI package `tiny-ai-client`
 - Gemini (vision, no tools)
 - Ollama (text, no vision, no tools) (you can also pass a custom model_server_url to AI/AsyncAI)
+  - To use it, `model_name='ollama:llama3'` or your model name.
 - Groq (text, tools, no vision)
+  - To use it `model_name='groq:llama-70b-8192'` or your model name as in Groq docs.
 
 Roadmap:
 
