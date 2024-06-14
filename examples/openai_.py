@@ -1,5 +1,4 @@
 import asyncio
-import os
 
 from PIL import Image as PIL_Image
 from pydantic import BaseModel, Field
@@ -66,6 +65,8 @@ def main():
 
 
 if __name__ == "__main__":
-    os.environ["OPENAI_API_KEY"] = None
+    from dotenv import load_dotenv
+
+    load_dotenv()
     main()
     asyncio.run(async_ai_main())

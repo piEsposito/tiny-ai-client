@@ -51,6 +51,21 @@ Roadmap:
 pip install tiny-ai-client
 ```
 
+To test, set the following environment variables:
+
+- OPENAI_API_KEY
+- ANTHROPIC_API_KEY
+- GROQ_API_KEY
+- GOOGLE_API_KEY
+
+Then
+
+To run all examples:
+
+```bash
+./scripts/run-all-examples.sh
+```
+
 For OpenAI:
 
 ```python
