@@ -31,7 +31,6 @@ class GeminiClientWrapper(LLMClientWrapper):
         history = []
         local_messages = deepcopy(messages)
         system = None
-        message = None
 
         for message in local_messages:
             if message.role == "system":
@@ -45,6 +44,7 @@ class GeminiClientWrapper(LLMClientWrapper):
                 if message.text is not None:
                     parts.append(message.text)
                 if message.images is not None:
+                    # noinspection PyTypeChecker
                     parts.extend(message.images)
                 history.append(
                     {
@@ -53,7 +53,7 @@ class GeminiClientWrapper(LLMClientWrapper):
                     }
                 )
 
-        return (system, history)
+        return system, history
 
     def call_llm_provider(
         self,
@@ -61,7 +61,7 @@ class GeminiClientWrapper(LLMClientWrapper):
         temperature: int | None,
         max_new_tokens: int | None,
         timeout: int,
-    ) -> str:
+    ) -> Message:
         system, history = model_input
 
         generation_config_kwargs = {}
@@ -92,7 +92,7 @@ class GeminiClientWrapper(LLMClientWrapper):
         temperature: int | None,
         max_new_tokens: int | None,
         timeout: int,
-    ) -> str:
+    ) -> Message:
         system, history = model_input
 
         generation_config_kwargs = {}
