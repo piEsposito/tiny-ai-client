@@ -85,25 +85,19 @@ class AI:
         if isinstance(images, PIL_Image.Image):
             images = [images]
         self.chat.append(Message(text=message, role="user", images=images))
+        text = ""
         for chunk in self.client_wrapper.stream(
             max_new_tokens=max_new_tokens,
             temperature=temperature,
             chat=self.chat,
             timeout=timeout,
         ):
+            text += chunk
             yield chunk
         # After streaming, update the chat history
         self.chat.append(
             Message(
-                text="".join(
-                    chunk
-                    for chunk in self.client_wrapper.stream(
-                        max_new_tokens=max_new_tokens,
-                        temperature=temperature,
-                        chat=self.chat,
-                        timeout=timeout,
-                    )
-                ),
+                text=text,
                 role="assistant",
             )
         )
@@ -196,23 +190,16 @@ class AsyncAI(AI):
         if isinstance(images, PIL_Image.Image):
             images = [images]
         self.chat.append(Message(text=message, role="user", images=images))
+        text = ""
         async for chunk in self.client_wrapper.astream(
             max_new_tokens=max_new_tokens,
             temperature=temperature,
             chat=self.chat,
             timeout=timeout,
         ):
+            text += chunk
             yield chunk
-        # After streaming, update the chat history
-        full_response = ""
-        async for chunk in self.client_wrapper.astream(
-            max_new_tokens=max_new_tokens,
-            temperature=temperature,
-            chat=self.chat,
-            timeout=timeout,
-        ):
-            full_response += chunk
-        self.chat.append(Message(text=full_response, role="assistant"))
+        self.chat.append(Message(text=text, role="assistant"))
 
 
 class ToolCall(BaseModel):
