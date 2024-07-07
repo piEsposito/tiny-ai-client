@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, List, Union
+from typing import Any, AsyncGenerator, Callable, Dict, Generator, List, Union
 
 from PIL import Image as PIL_Image
 from pydantic import BaseModel
@@ -68,6 +68,44 @@ class AI:
             response_msg.tool_call.result = tool_result
         return response_msg.text or (
             response_msg.tool_call.result if response_msg.tool_call else ""
+        )
+
+    def stream(
+        self,
+        message: str | None = None,
+        max_new_tokens: int | None = None,
+        temperature: int | None = 1,
+        timeout: int | None = None,
+        images: List[PIL_Image.Image] | PIL_Image.Image | None = None,
+    ) -> Generator[str, None, None]:
+        max_new_tokens = max_new_tokens or self.max_new_tokens
+        temperature = temperature or self.temperature
+        timeout = timeout or self.timeout
+        message = message or ""
+        if isinstance(images, PIL_Image.Image):
+            images = [images]
+        self.chat.append(Message(text=message, role="user", images=images))
+        for chunk in self.client_wrapper.stream(
+            max_new_tokens=max_new_tokens,
+            temperature=temperature,
+            chat=self.chat,
+            timeout=timeout,
+        ):
+            yield chunk
+        # After streaming, update the chat history
+        self.chat.append(
+            Message(
+                text="".join(
+                    chunk
+                    for chunk in self.client_wrapper.stream(
+                        max_new_tokens=max_new_tokens,
+                        temperature=temperature,
+                        chat=self.chat,
+                        timeout=timeout,
+                    )
+                ),
+                role="assistant",
+            )
         )
 
     def get_llm_client_wrapper(
@@ -143,6 +181,39 @@ class AsyncAI(AI):
             response_msg.tool_call.result if response_msg.tool_call else ""
         )
 
+    async def astream(
+        self,
+        message: str | None = None,
+        max_new_tokens: int | None = None,
+        temperature: int | None = 1,
+        timeout: int | None = None,
+        images: List[PIL_Image.Image] | PIL_Image.Image | None = None,
+    ) -> AsyncGenerator[str, None]:
+        max_new_tokens = max_new_tokens or self.max_new_tokens
+        temperature = temperature or self.temperature
+        timeout = timeout or self.timeout
+        message = message or ""
+        if isinstance(images, PIL_Image.Image):
+            images = [images]
+        self.chat.append(Message(text=message, role="user", images=images))
+        async for chunk in self.client_wrapper.astream(
+            max_new_tokens=max_new_tokens,
+            temperature=temperature,
+            chat=self.chat,
+            timeout=timeout,
+        ):
+            yield chunk
+        # After streaming, update the chat history
+        full_response = ""
+        async for chunk in self.client_wrapper.astream(
+            max_new_tokens=max_new_tokens,
+            temperature=temperature,
+            chat=self.chat,
+            timeout=timeout,
+        ):
+            full_response += chunk
+        self.chat.append(Message(text=full_response, role="assistant"))
+
 
 class ToolCall(BaseModel):
     id_: str
@@ -192,6 +263,15 @@ class LLMClientWrapper:
             timeout=timeout,
         )
 
+    def stream(
+        self,
+        max_new_tokens: int | None,
+        temperature: int | None,
+        timeout: int,
+        chat: List["Message"],
+    ) -> Generator[str, None, None]:
+        raise NotImplementedError
+
     async def async_call_llm_provider(
         self,
         model_input: Any,
@@ -215,3 +295,12 @@ class LLMClientWrapper:
             temperature=temperature,
             timeout=timeout,
         )
+
+    async def astream(
+        self,
+        max_new_tokens: int | None,
+        temperature: int | None,
+        timeout: int,
+        chat: List["Message"],
+    ) -> AsyncGenerator[str, None]:
+        raise NotImplementedError

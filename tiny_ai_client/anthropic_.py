@@ -1,5 +1,5 @@
 import os
-from typing import Any, Callable, Dict, List, Union
+from typing import Any, Callable, Dict, List, Union, Generator, AsyncGenerator
 
 from anthropic import Anthropic, AsyncAnthropic
 
@@ -133,6 +133,32 @@ class AnthropicClientWrapper(LLMClientWrapper):
                 ),
             )
 
+    def stream(
+        self,
+        max_new_tokens: int | None,
+        temperature: int | None,
+        timeout: int,
+        chat: List["Message"],
+    ) -> Generator[str, None, None]:
+        kwargs = {}
+        input_messages, system = self.build_model_input(chat)
+        if temperature is not None:
+            kwargs["temperature"] = temperature
+        if max_new_tokens is not None:
+            kwargs["max_tokens"] = max_new_tokens
+        if system is not None:
+            kwargs["system"] = system
+        if self.tools_json:
+            kwargs["tools"] = self.tools_json
+
+        with self.client.with_options(timeout=timeout).messages.stream(
+            model=self.model_name,
+            messages=input_messages,
+            **kwargs,
+        ) as stream:
+            for text in stream.text_stream:
+                yield text
+
     async def async_call_llm_provider(
         self,
         model_input: Any,
@@ -171,3 +197,29 @@ class AnthropicClientWrapper(LLMClientWrapper):
                     name=response_content.name,
                 ),
             )
+
+    async def astream(
+        self,
+        max_new_tokens: int | None,
+        temperature: int | None,
+        timeout: int,
+        chat: List["Message"],
+    ) -> AsyncGenerator[str, None]:
+        kwargs = {}
+        input_messages, system = self.build_model_input(chat)
+        if temperature is not None:
+            kwargs["temperature"] = temperature
+        if max_new_tokens is not None:
+            kwargs["max_tokens"] = max_new_tokens
+        if system is not None:
+            kwargs["system"] = system
+        if self.tools_json:
+            kwargs["tools"] = self.tools_json
+
+        async with self.async_client.with_options(timeout=timeout).messages.stream(
+            model=self.model_name,
+            messages=input_messages,
+            **kwargs,
+        ) as stream:
+            async for text in stream.text_stream:
+                yield text

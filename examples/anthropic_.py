@@ -30,7 +30,7 @@ async def async_ai_main():
     print("### ASYNC AI ###")
     ai = AsyncAI(
         model_name="claude-3-sonnet-20240229",
-        system="You are a helpful assistent capable of using tools.",
+        system="You are a helpful assistant capable of using tools.",
         max_new_tokens=1024,
         tools=[get_current_weather],
     )
@@ -42,12 +42,17 @@ async def async_ai_main():
     print(f"{response=}")
     print(f"{ai.chat=}")
 
+    print("\n### ASYNC AI STREAMING ###")
+    async for chunk in ai.astream("Tell me a short story about a brave astronaut."):
+        print(chunk, end="", flush=True)
+    print("\n")
+
 
 def main():
     print("### SYNC AI ###")
     ai = AI(
         model_name="claude-3-sonnet-20240229",
-        system="You are a helpful assistent capable of using tools.",
+        system="You are a helpful assistant capable of using tools.",
         max_new_tokens=1024,
         tools=[get_current_weather],
     )
@@ -58,6 +63,11 @@ def main():
     response = ai("Who is on the images?", images=get_images())
     print(f"{response=}")
     print(f"{ai.chat=}")
+
+    print("\n### SYNC AI STREAMING ###")
+    for chunk in ai.stream("Tell me a short story about a brave astronaut."):
+        print(chunk, end="", flush=True)
+    print("\n")
 
 
 if __name__ == "__main__":
