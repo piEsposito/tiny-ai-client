@@ -1,5 +1,5 @@
 import json
-from typing import Any, Callable, Dict, List, Union
+from typing import Any, Callable, Dict, List, Union, Generator, AsyncGenerator
 
 from openai import AsyncOpenAI, OpenAI
 
@@ -97,6 +97,34 @@ class OpenAIClientWrapper(LLMClientWrapper):
                 ),
             )
 
+    def stream(
+        self,
+        max_new_tokens: int | None,
+        temperature: int | None,
+        timeout: int,
+        chat: List["Message"],
+    ) -> Generator[str, None, None]:
+        kwargs = {}
+        if temperature is not None:
+            kwargs["temperature"] = temperature
+        if max_new_tokens is not None:
+            kwargs["max_tokens"] = max_new_tokens
+        if self.tools_json:
+            kwargs["tools"] = self.tools_json
+
+        model_input = self.build_model_input(chat)
+        
+        stream = self.client.with_options(timeout=timeout).chat.completions.create(
+            model=self.model_name,
+            messages=model_input,
+            stream=True,
+            **kwargs,
+        )
+
+        for chunk in stream:
+            if chunk.choices[0].delta.content is not None:
+                yield chunk.choices[0].delta.content
+
     async def async_call_llm_provider(
         self,
         model_input: Any,
@@ -133,3 +161,31 @@ class OpenAIClientWrapper(LLMClientWrapper):
                     name=chat_response.tool_calls[0].function.name,
                 ),
             )
+
+    async def astream(
+        self,
+        max_new_tokens: int | None,
+        temperature: int | None,
+        timeout: int,
+        chat: List["Message"],
+    ) -> AsyncGenerator[str, None]:
+        kwargs = {}
+        if temperature is not None:
+            kwargs["temperature"] = temperature
+        if max_new_tokens is not None:
+            kwargs["max_tokens"] = max_new_tokens
+        if self.tools_json:
+            kwargs["tools"] = self.tools_json
+
+        model_input = self.build_model_input(chat)
+        
+        stream = await self.async_client.with_options(timeout=timeout).chat.completions.create(
+            model=self.model_name,
+            messages=model_input,
+            stream=True,
+            **kwargs,
+        )
+
+        async for chunk in stream:
+            if chunk.choices[0].delta.content is not None:
+                yield chunk.choices[0].delta.content
