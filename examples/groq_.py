@@ -32,7 +32,7 @@ async def async_ai_main():
         model_name="groq:llama3-70b-8192",
         system="You are Spock, from Star Trek.",
         max_new_tokens=128,
-        tools=[get_current_weather],
+        # tools=[get_current_weather],
     )
     response = await ai("What is the meaning of life?")
     print(f"{response=}")
@@ -42,6 +42,11 @@ async def async_ai_main():
     print(f"{response=}")
     print(f"{ai.chat=}")
 
+    print("\n### ASYNC AI STREAMING ###")
+    async for chunk in ai.astream("Tell me a short story about a brave astronaut."):
+        print(chunk, end="", flush=True)
+    print("\n")
+
 
 def main():
     print("### SYNC AI ###")
@@ -49,7 +54,7 @@ def main():
         model_name="groq:llama3-70b-8192",
         system="You are Spock, from Star Trek.",
         max_new_tokens=128,
-        tools=[get_current_weather],
+        # tools=[get_current_weather],
     )
     response = ai("What is the meaning of life?")
     print(f"{response=}")
@@ -58,6 +63,11 @@ def main():
     response = ai("Did it work?")
     print(f"{response=}")
     print(f"{ai.chat=}")
+
+    print("\n### SYNC AI STREAMING ###")
+    for chunk in ai.stream("Tell me a short story about a brave astronaut."):
+        print(chunk, end="", flush=True)
+    print("\n")
 
 
 if __name__ == "__main__":
