@@ -1,6 +1,6 @@
 import os
 from copy import deepcopy
-from typing import Any, Callable, Dict, List, Union
+from typing import Any, Callable, Dict, List, Union, Generator, AsyncGenerator
 
 import google.generativeai as genai
 
@@ -16,16 +16,6 @@ class GeminiClientWrapper(LLMClientWrapper):
         self.tools_json = [function_to_json(tool) for tool in tools]
         if len(self.tools_json) > 0:
             raise ValueError("Gemini does not support tools")
-        # self.tools_obj = [
-        #     genai.types.FunctionDeclaration(
-        #         name=tool["function"]["name"],
-        #         description=tool["function"]["description"],
-        #         parameters=genai.types.content_types.strip_titles(
-        #             tool["function"]["parameters"]
-        #         ),
-        #     )
-        #     for tool in self.tools_json
-        # ]
 
     def build_model_input(self, messages: List["Message"]) -> Any:
         history = []
@@ -86,6 +76,33 @@ class GeminiClientWrapper(LLMClientWrapper):
             return Message(role="assistant", text=response.text)
         raise ValueError("Invalid response from Gemini")
 
+    def stream(
+        self,
+        max_new_tokens: int | None,
+        temperature: int | None,
+        timeout: int,
+        chat: List["Message"],
+    ) -> Generator[str, None, None]:
+        system, history = self.build_model_input(chat)
+
+        generation_config_kwargs = {}
+        if temperature is not None:
+            generation_config_kwargs["temperature"] = temperature
+        if max_new_tokens is not None:
+            generation_config_kwargs["max_output_tokens"] = max_new_tokens
+
+        generation_config = genai.GenerationConfig(**generation_config_kwargs)
+        model = genai.GenerativeModel(
+            self.model_name,
+            system_instruction=system,
+            generation_config=generation_config,
+        )
+
+        model.start_chat(history=history)
+        response = model.generate_content(history, stream=True)
+        for chunk in response:
+            yield chunk.text
+
     async def async_call_llm_provider(
         self,
         model_input: Any,
@@ -116,3 +133,30 @@ class GeminiClientWrapper(LLMClientWrapper):
         elif response.text is not None:
             return Message(role="assistant", text=response.text)
         raise ValueError("Invalid response from Gemini")
+
+    async def astream(
+        self,
+        max_new_tokens: int | None,
+        temperature: int | None,
+        timeout: int,
+        chat: List["Message"],
+    ) -> AsyncGenerator[str, None]:
+        system, history = self.build_model_input(chat)
+
+        generation_config_kwargs = {}
+        if temperature is not None:
+            generation_config_kwargs["temperature"] = temperature
+        if max_new_tokens is not None:
+            generation_config_kwargs["max_output_tokens"] = max_new_tokens
+
+        generation_config = genai.GenerationConfig(**generation_config_kwargs)
+        model = genai.GenerativeModel(
+            self.model_name,
+            system_instruction=system,
+            generation_config=generation_config,
+        )
+
+        model.start_chat(history=history)
+        response = await model.generate_content_async(history, stream=True)
+        async for chunk in response:
+            yield chunk.text

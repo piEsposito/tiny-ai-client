@@ -40,6 +40,11 @@ def main():
     print(f"{response=}")
     # print(f"{ai.chat=}")
 
+    print("\n### SYNC AI STREAMING ###")
+    for chunk in ai.stream("Tell me a short story about a brave astronaut."):
+        print(chunk, end="", flush=True)
+    print("\n")
+
 
 async def async_ai_main():
     print("### ASYNC AI ###")
@@ -54,6 +59,11 @@ async def async_ai_main():
     response = await ai("Who is on the images?", images=get_images())
     print(f"{response=}")
     # print(f"{ai.chat=}")
+
+    print("\n### ASYNC AI STREAMING ###")
+    async for chunk in ai.astream("Tell me a short story about a brave astronaut."):
+        print(chunk, end="", flush=True)
+    print("\n")
 
 
 if __name__ == "__main__":
