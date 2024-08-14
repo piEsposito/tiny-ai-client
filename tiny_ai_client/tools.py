@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import get_type_hints
 
 from pydantic import BaseModel

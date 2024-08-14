@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import Any, AsyncGenerator, Callable, Dict, Generator, List, Union
 
 from PIL import Image as PIL_Image
@@ -29,7 +30,7 @@ class AI:
 
         tools = tools or []
         self.tools = tools
-        self.tools_dict = {tool.__name__: tool for tool in tools}
+        self.tools_dict = {tool.__name__: tool for tool in self.tools}
 
         self.model_name: str = model_name
         self.system: str = system
