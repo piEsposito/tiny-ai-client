@@ -102,7 +102,7 @@ class AnthropicClientWrapper(LLMClientWrapper):
         temperature: int | None,
         max_new_tokens: int | None,
         timeout: int,
-    ) -> str:
+    ) -> Message:
         kwargs = {}
         input_messages, system = model_input
         if temperature is not None:
@@ -166,7 +166,7 @@ class AnthropicClientWrapper(LLMClientWrapper):
         temperature: int | None,
         max_new_tokens: int | None,
         timeout: int,
-    ) -> str:
+    ) -> Message:
         kwargs = {}
         input_messages, system = model_input
         if temperature is not None:

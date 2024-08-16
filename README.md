@@ -2,7 +2,7 @@
 
 Inspired by [tinygrad](https://github.com/tinygrad/tinygrad) and [simpleaichat](https://github.com/minimaxir/simpleaichat/tree/main/simpleaichat), `tiny-ai-client` is the easiest way to use and switch LLMs with vision and tool usage support. It works because it is `tiny`, `simple` and most importantly `fun` to develop.
 
-I want to change LLMs with ease, while knowing what is happening under the hood. Langchain is cool, but became bloated, complicated there is just too much chaos going on. I want to keep it simple, easy to understand and easy to use. If you want to use a LLM and have an API key, you should not need to read a 1000 lines of code and write `response.choices[0].message.content` to get the response.
+I want to change LLMs with ease, while knowing what is happening under the hood. Langchain is cool, but became bloated, complicated there is just too much chaos going on. I want to keep it simple, easy to understand and easy to use. If you want to use a LLM and have an API key, you should not need to read 1000 lines of code and write `response.choices[0].message.content` to get the response.
 
 Simple and tiny, that's the goal.
 
