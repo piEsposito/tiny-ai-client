@@ -1,6 +1,7 @@
 from __future__ import annotations
+
 import json
-from typing import Any, Callable, Dict, List, Union, Generator, AsyncGenerator
+from typing import Any, AsyncGenerator, Callable, Dict, Generator, List, Union
 
 from openai import AsyncOpenAI, OpenAI
 
@@ -74,7 +75,7 @@ class OpenAIClientWrapper(LLMClientWrapper):
         if temperature is not None:
             kwargs["temperature"] = temperature
         if max_new_tokens is not None:
-            kwargs["max_tokens"] = max_new_tokens
+            kwargs["max_completion_tokens"] = max_new_tokens
         if self.tools_json:
             kwargs["tools"] = self.tools_json
         response = self.client.with_options(timeout=timeout).chat.completions.create(
@@ -109,12 +110,12 @@ class OpenAIClientWrapper(LLMClientWrapper):
         if temperature is not None:
             kwargs["temperature"] = temperature
         if max_new_tokens is not None:
-            kwargs["max_tokens"] = max_new_tokens
+            kwargs["max_completion_tokens"] = max_new_tokens
         if self.tools_json:
             kwargs["tools"] = self.tools_json
 
         model_input = self.build_model_input(chat)
-        
+
         stream = self.client.with_options(timeout=timeout).chat.completions.create(
             model=self.model_name,
             messages=model_input,
@@ -137,7 +138,7 @@ class OpenAIClientWrapper(LLMClientWrapper):
         if temperature is not None:
             kwargs["temperature"] = temperature
         if max_new_tokens is not None:
-            kwargs["max_tokens"] = max_new_tokens
+            kwargs["max_completion_tokens"] = max_new_tokens
         if self.tools_json:
             kwargs["tools"] = self.tools_json
         response = await self.async_client.with_options(
@@ -174,13 +175,15 @@ class OpenAIClientWrapper(LLMClientWrapper):
         if temperature is not None:
             kwargs["temperature"] = temperature
         if max_new_tokens is not None:
-            kwargs["max_tokens"] = max_new_tokens
+            kwargs["max_completion_tokens"] = max_new_tokens
         if self.tools_json:
             kwargs["tools"] = self.tools_json
 
         model_input = self.build_model_input(chat)
-        
-        stream = await self.async_client.with_options(timeout=timeout).chat.completions.create(
+
+        stream = await self.async_client.with_options(
+            timeout=timeout
+        ).chat.completions.create(
             model=self.model_name,
             messages=model_input,
             stream=True,
