@@ -9,6 +9,12 @@ from tiny_ai_client.tools import json_to_function_input
 
 
 class AI:
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__}({self.model_name=}, {self.system=})"
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self.model_name=}, {self.system=})"
+
     def __init__(
         self,
         model_name: str,
@@ -33,7 +39,7 @@ class AI:
         self.tools = tools
         self.tools_dict = {tool.__name__: tool for tool in self.tools}
 
-        self.model_name: str = model_name
+        self._model_name: str = model_name
         self.system: str = system
 
         self.client_wrapper: LLMClientWrapper = self.get_llm_client_wrapper(

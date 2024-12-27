@@ -15,6 +15,7 @@ pillow = "11"
 groq = "0.13.1"
 python-dotenv = "^1.0.1"
 aiohttp = "^3.10.3"
+structlog = "^24.4.0"
 
 
 [tool.poetry.group.gemini]

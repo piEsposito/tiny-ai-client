@@ -2,8 +2,11 @@ import asyncio
 from typing import List
 
 from pydantic import BaseModel
+from structlog import get_logger
 
 from tiny_ai_client import AsyncAI
+
+logger = get_logger(__name__)
 
 
 class Discusser(BaseModel):
@@ -11,6 +14,12 @@ class Discusser(BaseModel):
     description: str | None
 
     model_config = {"arbitrary_types_allowed": True}
+
+
+def __str__(self) -> str:
+    model_name = self.model.model_name
+    desc = f" ({self.description})" if self.description else ""
+    return f"Discusser({model_name=}, {desc=})"
 
 
 class ConsensusAI:
@@ -25,12 +34,23 @@ class ConsensusAI:
     async def get_consensus(self, prompt: str, **kwargs) -> str:
         # Gather responses from all discussers
         responses = []
+        logger.info(
+            "Getting responses from discussers",
+            prompt=prompt,
+            discussers=self.discussers,
+            kwargs=kwargs,
+        )
         responses = await asyncio.gather(
             *[discusser.model(prompt, **kwargs) for discusser in self.discussers]
         )
         responses = [
             f"Expert {i+1}: {response}" for i, response in enumerate(responses)
         ]
+        for discusser, response in zip(self.discussers, responses):
+            logger.info(
+                f"Discusser response for {discusser.description}",
+                response=response,
+            )
 
         # Format responses for the judge
         discussion = "\n\n".join(responses)
