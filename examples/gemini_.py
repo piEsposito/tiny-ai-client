@@ -67,8 +67,14 @@ async def async_ai_main():
 
 
 if __name__ == "__main__":
+    import os
+
     from dotenv import load_dotenv
 
     load_dotenv()
+    if os.environ.get("GOOGLE_API_KEY"):
+        os.environ["OPENAI_API_KEY"] = os.environ["GOOGLE_API_KEY"]
+    if os.environ.get("GOOGLE_OPENAI_BASE_URL"):
+        os.environ["OPENAI_BASE_URL"] = os.environ["GOOGLE_OPENAI_BASE_URL"]
     main()
     asyncio.run(async_ai_main())

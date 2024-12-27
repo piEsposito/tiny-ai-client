@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from typing import Any, AsyncGenerator, Callable, Dict, Generator, List, Union
 
 from PIL import Image as PIL_Image
@@ -119,7 +120,7 @@ class AI:
 
             return GroqClientWrapper(model_name, tools)
 
-        if "gpt" in model_name:
+        if "gpt" in model_name or "o1" in model_name:
             from tiny_ai_client.openai_ import OpenAIClientWrapper
 
             return OpenAIClientWrapper(model_name, tools)
